@@ -1,0 +1,62 @@
+_init
+			MOV		R0, #4096
+			MOV		R1, #8192
+			MOV		R2, #255
+			MOV		R8, #1
+			
+			LDR		R3, =0xE048
+			LDR		R4, =0xE050
+			
+			STR		R5, [R0]
+			STR		R6, [R1]
+			
+			B		_key_pressed1
+_save_key
+			STR		R5, [R0]	;0x24
+			B		_read
+_update_ctr
+			STR		R6, [R1]	;0x2C
+			ADD		R8, R8, #1
+			CMP		R8, #2
+			BEQ		_key_pressed2
+			CMP		R8, #3
+			BEQ		_key_pressed3
+			CMP		R8, #4
+			BEQ		_incorrect_key
+			CMP		R8, #5
+			BEQ		_key_pressed4
+			B		_finish
+_read
+			LDR		R7, [R0]	;0x58
+			CMP		R7, R3
+			BEQ		_ctr_add
+			CMP		R7, R4
+			BEQ		_ctr_sub
+			B		_error
+_ctr_add
+			ADD		R6, R6, #1	;0x70
+			B		_update_ctr
+_ctr_sub
+			SUB		R6, R6, #1	;0x78
+			B		_update_ctr
+_error
+			STR		R2, [R1]	;0x80
+			B		_update_ctr
+			
+_key_pressed1
+			LDR		R5, =0xE048	;0x88
+			B		_save_key
+_key_pressed2
+			LDR		R5, =0xE048	;0x90
+			B		_save_key
+_key_pressed3
+			LDR		R5, =0xE050	;0x98
+			B		_save_key
+_incorrect_key
+			LDR		R5, =0xE712	;0x100
+			B		_save_key
+_key_pressed4
+			LDR		R5, =0xE050	;0x108
+			B		_save_key
+_finish
+	B _finish	;0x110

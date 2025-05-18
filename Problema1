@@ -1,0 +1,42 @@
+		B		_main	; 0x0
+		
+_array	DCD		9, 3, 5, 7, 11, 10, 4, 6, 13, 1	;0x4
+		
+_main
+		MOV		R0, #6	;0x8
+		MOV		R4, #1	;0xC
+		MOV		R5, #10	;0x10
+		LDR		R1, =_array	;0x14
+_loop
+		LDR		R2, [R1]	;0x18
+_cmp
+		CMP		R0, R2	;0x1C
+		BLE		_mul	;0x20
+		B		_add	;0x24
+		
+_mul
+		MOV		R6, #0	;0x28
+		MOV		R7, #0	;0x2C
+_loopmul
+		ADD		R7, R7, R2	;0x30
+		ADD		R6, R6, #1	;0x34
+		CMP		R0, R6	;0x38
+		BEQ		_storemul	;0x3C
+		B		_loopmul	;0x40
+_storemul
+		STR		R7, [R1]	;0x44
+		B		_next	;0x48
+		
+_add
+		ADD		R3, R0, R2	;0x4C
+		STR		R3, [R1]	;0x50
+		B		_next	;0x54
+_next
+		CMP		R4, R5	;0x58
+		BEQ		_end	;0x5C
+		ADD		R1, R1, #4	;0x60
+		ADD		R4, R4, #1	;0x64
+		B		_loop	;0x68
+		
+_end
+	B _end	;0x6C

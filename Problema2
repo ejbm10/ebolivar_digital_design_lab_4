@@ -1,0 +1,25 @@
+		MOV		R0, #4	; Numero X
+		CMP		R0, #0
+		BEQ		_fact01
+		CMP		R0, #1	; Verifica si el numero es 0 o 1, si es asi, salta a la linea 20
+		BEQ		_fact01
+		MOV		R1, R0	; Se carga el numero X a R1
+		SUB		R2, R1, #1	; Se carga el numero X-1 a R2
+_loop
+		ADD		R4, R4, #1
+		ADD		R3, R3, R1	; Suma X-1 veces R1 en R3
+		CMP		R2, R4
+		BEQ		_next
+		B		_loop
+_next
+		MOV		R1, R3	; Guarda el resultado parcial de R3 en R1
+		SUB		R2, R2, #1	; Resta 1 a R2
+		MOV		R3, #0
+		MOV		R4, #0	; Reinicia los iteradores R3 Y R4
+		CMP		R2, #0	; Si R2 es 0, termina, si no, sigue calculando las multiplicaciones
+		BEQ		_end
+		B		_loop
+_fact01
+		MOV		R1, #1
+_end
+		B		_end
